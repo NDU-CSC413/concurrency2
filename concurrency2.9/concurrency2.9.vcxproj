@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f68a334c-3783-4baf-98d8-d2639c9bb91d}</ProjectGuid>
-    <RootNamespace>concurrency26</RootNamespace>
+    <ProjectGuid>{1e19821b-1f57-41ef-9232-af3d9355b711}</ProjectGuid>
+    <RootNamespace>concurrency29</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>concurrency2.6</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,7 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="concurrency2.6.cpp" />
+    <ClCompile Include="concurrency2.9.cpp" />
+    <ClCompile Include="get_url.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="get_url.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

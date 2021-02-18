@@ -1,7 +1,7 @@
 /*****************************************************************//**
  * @file   concurrency2.6.cpp
- * @brief  Spinlock
- * 
+ * @brief  condition variables
+ * TODO  condition variables
  * @author Hikmat Farhat
  * @date   February 2021
  *********************************************************************/
