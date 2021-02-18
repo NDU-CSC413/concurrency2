@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tmp.cpp">
+    <ClCompile Include="concurrency2.6.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

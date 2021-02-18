@@ -1,67 +1,75 @@
-
-
+/*****************************************************************//**
+ * @file   concrurrency2.1.cpp
+ * @brief  Using lock_guard
+ * 
+ * @author Hikmat Farhat
+ * @date   February 2021
+ *********************************************************************/
 #include <iostream>
 #include <thread>
 #include <mutex>
 #include <random>
-#include <algorithm>
-#include <cmath>
+#include  <string>
+
 
 int y = 0;
 int num_iterations = 100000;
-int num_trials = 10;
+int num_trials = 10; 
+
+
+std::random_device rd;
+std::uniform_int_distribution<> dist(50, 500);
 
 std::mutex m;
+int add(const std::vector<std::string>& values) {
+    int val = 0;
+    std::this_thread::sleep_for(std::chrono::milliseconds(dist(rd)));
+    /* if your compiler supports c++17
+    * std::lock_guard g(m);
+    * is sufficient
+    */
+   std::lock_guard<std::mutex> g(m);
+    for (int i = 0; i < values.size(); ++i)
+        val += std::stoi(values[i]);
+    return val;
+}
+int sub(const std::vector<std::string>& values) {
+    int val = 0;
+    /* wait twice as much as add on average */
+    std::this_thread::sleep_for(std::chrono::milliseconds(2 * dist(rd)));
+    std::lock_guard<std::mutex> g(m);
+    for (int i = 0; i < values.size(); ++i)
+        val -= std::stoi(values[i]);
+    return val;
+}
+
+
+template <typename T>
+void threadf(int& val, const T& values
+    , int (*f)(const T&)) {
+    /* we MUST catch exception here.
+    * it cannot be caught by main
+    */
+    try {
+        val += f(values);
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << "\n";
+    }
+}
 
 int main()
 {
+    using V = std::vector<std::string>;
+    int sum = 0;
+    V values{ "1","2","3","4","5" };
+    V evalues{ "p","2","3","4","5" };//causes exception in std::stoi
+    /* due to exception this thread will exit without releasing mutex*/
+    std::thread t1(threadf<V>, std::ref(sum), std::ref(evalues), add);
+    /* this one will most probably hang waiting for the mutex to be released*/
+    std::thread t2(threadf<V>, std::ref(sum), std::ref(values), sub);
+    t1.join();
+    t2.join();
 
-    int a, b;
-    std::default_random_engine e;
-    std::uniform_int_distribution<> id(100000, 1000000);
-
-    a = id(e);
-    b = id(e);
-    auto add = [a, b](int& val) {
-        std::lock_guard<std::mutex> g(m);
-        for (int i = 0; i < num_iterations; ++i) {
-            ++val;
-        } 
-    };
-    auto sub = [a, b](int& val) {
-        std::lock_guard<std::mutex> g(m);
-        for (int i = 0; i < num_iterations; ++i) {
-            --val;
-        }
-
-    };
-    for (int j = 0; j < num_trials; j++) {
-
-        std::vector<std::thread > mythreads;
-        int x = 0;
-        y = 0;
-        //funcObject c(x, a, b, INC);
-        std::thread t1(add, std::ref(x));
-        std::thread t2(add, std::ref(y));
-        /* below will not work because a
-           vector will attempt to make a copy
-           of t1 and t2 and the copy constructor
-           for the thread class is deleted
-        mythreads.push_back(t1);
-        mythreads.push_back(t2);
-        */
-        mythreads.push_back(std::move(t1));
-        mythreads.push_back(std::move(t2));
-
-        mythreads.push_back(std::thread(sub, std::ref(x)));
-
-        mythreads.push_back(std::thread(sub, std::ref(y)));
-        for (auto& t : mythreads)
-            t.join();
-
-        std::cout << "trial " << j << ",x=" << x << ",y=" << y << std::endl;
-
-
-    }
-
+    std::cout << sum << "\n";
 }

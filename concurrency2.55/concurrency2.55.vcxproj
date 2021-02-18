@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{ceeb8ffd-2ac0-4a39-9d4a-e941aa0dd853}</ProjectGuid>
-    <RootNamespace>tmp</RootNamespace>
+    <ProjectGuid>{437ac899-1fc0-4150-a585-4b2b31fe124f}</ProjectGuid>
+    <RootNamespace>concurrency255</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="tmp.cpp" />
+    <ClCompile Include="concurrency2.55.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

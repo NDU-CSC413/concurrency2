@@ -1,111 +1,66 @@
-// readersWriters.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+/*****************************************************************//**
+ * @file   concurrency2.2.cpp
+ * @brief  Deadlock using lock_guard
+ * lock_guard does not solve all deadlock situations
+ * Classical producer/consumer with bounded buffer
+ * In this case locking two semaphores in wrong order
+ * @author Hikmat Farhat
+ * @date   February 2021
+ *********************************************************************/
 
 #include <iostream>
-#include <vector>
-#include <random>
+#include <fstream>
 #include <thread>
-#include <mutex>
 #include <chrono>
-#include <shared_mutex>
+#include <mutex>
+#include <random>
 
-std::random_device e;
-std::uniform_int_distribution<> dist(1, 50);
-std::vector<int> v;
-int nreaders = 0;
-#define SYNC
-#ifdef SYNC
-std::shared_mutex wrt;
-std::mutex m;
-#endif // SYNC
+using m = std::chrono::milliseconds;
+#define NUM 20
+const int capacity = 2<<20;
+int size = 0;
+int array[capacity]{};
 
-class Reader {
-public:
-    static int num;
-    void operator() () {
-        int sum = 0;
-        std::this_thread::sleep_for(std::chrono::milliseconds(dist(e) * 100));
+std::mutex a, s;
+std::random_device rd;
+std::uniform_int_distribution<> dist(1, 5);
+void producer() {
+    int value = 9;
+    
+    for (int i = 0; i < NUM; ++i) {
+        std::this_thread::sleep_for(m(dist(rd)));
 
-#ifdef SYNC
-        m.lock();
-        nreaders++;
-        if (nreaders == 1)
-            wrt.lock();
-        m.unlock();
-#endif 
-
-        std::cout << "Reader thread " << std::this_thread::get_id() << " started\n";
-        for (auto x : v) {
-            sum += x;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
-#ifdef SYNC
-        m.lock();
-        nreaders--;
-        std::cout << " Reader thread " << std::this_thread::get_id() << " ended\n";
-
-        if (nreaders == 0) {
-            wrt.unlock();
-        }
-        m.unlock();
-#endif // SYNC
-        if (sum != 0) std::cout << "sum in thread " <<std::this_thread::get_id()<<" is "<< sum << std::endl;
+        std::lock_guard gs(s);
+        std::lock_guard ga(a);
+        if (size == capacity)continue;
+        std::cout << "\r" <<i;
+        std::cout.flush();
+        array[size++] = value;
     }
-};
+}
+void consumer() {
+    int val;
+    int counter = 0;
+    for (int i = 0; i < NUM; ++i) {
+        std::this_thread::sleep_for(m(dist(rd)) * 10);
+        /* wrong order of locking*/
+        std::lock_guard ga(a);
+        std::lock_guard gs(s);
 
-class Writer {
-
-public:
-    Writer() {
-    }
-    void operator() () {
-        int value = dist(e);
-        std::this_thread::sleep_for(std::chrono::milliseconds(dist(e) * 100));
-
-#ifdef SYNC
-        wrt.lock();
-#endif // SYNC
-        std::cout << " Writer thread " << std::this_thread::get_id() << " started\n";
-
-        for (auto& x : v) {
-            x = value;
-            value = -value;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (size != 0) {
+         val = array[size--];
+         std::cout << "\t" << ++counter;
         }
-#ifdef SYNC
-        std::cout << " Writer thread " << std::this_thread::get_id() << " ended\n";
-        wrt.unlock();
-#endif // SYNC
-
     }
-};
-
+}
 int main()
 {
-    int value = 1;
-    for (int i = 0; i < 100; i++) {
-        v.push_back(value);
-        value = -value;
-    }
-    for (int i = 0; i < 10; i++) {
-        std::cout << "Trial " << i << std::endl;
-        std::vector<std::thread> mythreads;
-        for (int i = 0; i < 2; i++) {
-            Reader r1, r2;
-            Writer w;
-            std::thread t1(r1);
-            std::thread t2(w);
-            std::thread t3(r2);
-            mythreads.push_back(std::move(t1));
-            mythreads.push_back(std::move(t2));
-            mythreads.push_back(std::move(t3));
-        }
-        //t1.join();
-        //t2.join();
-        for (auto& t : mythreads)
-            t.join();
-        std::cout << "----------------" << std::endl;
-    }
+    std::thread p(producer);
+    std::thread c(consumer);
+    std::cout << "#Writes\t #Reads\n";
+    p.join();
+    c.join();
 
 
 }
+

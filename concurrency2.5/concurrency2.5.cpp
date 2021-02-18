@@ -1,62 +1,81 @@
-// concurrency2.5.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+/*****************************************************************//**
+ * @file   concurrency2.5.cpp
+ * @brief  Thread safe stack
+ * TODO: more explanation is needed
+ * @author Hikmat Farhat
+ * @date   February 2021
+ *********************************************************************/
 
 #include <iostream>
 #include <mutex> 
 #include <stack>
 #include <exception>
+#include <thread>
+#include <vector>
+#include <set>
+#include <chrono>
 
-//struct empty_stack : std::exception {
-//    const char* what() const throw();
-//};
-
+//#define SAFE
 template<typename T> class threadsafe_stack {
 private:
 std::stack<T> data;     
-//mutable 
 std::mutex m; 
 public:
     threadsafe_stack() {}
-    threadsafe_stack(const threadsafe_stack& other) {
-        std::lock_guard<std::mutex> lock(other.m);         
-        data = other.data;
-    }
-  
-    threadsafe_stack& operator=(const threadsafe_stack&) = delete;     
+   
     void push(T new_value){
-        std::lock_guard<std::mutex> lock(m);         
-        data.push(std::move(new_value));
+#ifdef SAFE
+        std::lock_guard<std::mutex> lock(m);       
+#endif 
+        data.push(new_value);
     }
-    std::shared_ptr<T> pop(){
-        std::lock_guard<std::mutex> lock(m);         
-        if (data.empty()) throw std::exception("empty stack");
-        std::shared_ptr<T> const res(std::make_shared<T>(data.top()));     
-        data.pop();
-        return res;
-    }
+    
     void pop(T & value) {
-        std::lock_guard<std::mutex> lock(m);        
+#ifdef SAFE
+        std::lock_guard<std::mutex> lock(m);  
+#endif 
         if (data.empty()) throw std::exception("empty stack");
         value = data.top();        
         data.pop();
     }
     bool empty() const {
-        std::lock_guard<std::mutex> lock(m);         
+#ifdef SAFE
+        std::lock_guard<std::mutex> lock(m);
+#endif 
         return data.empty();
     }
 };
-int main()
-{
-    std::cout << "Hello World!\n";
+
+std::mutex vm;
+std::vector<int> values;
+threadsafe_stack<int> s;
+void pop_and_print(int label) {
+    int val;
+    for (int i = 0; i < 100; ++i) {
+        s.pop(val);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        //std::cout << "thread " << label << "->" << val << "\n";
+        vm.lock();
+        values.push_back(val);
+        vm.unlock();
+    }
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+int main()
+{
+    const int num_threads = 5;
+    std::vector<std::thread> mythreads;
+    
+    for (int i = 0; i < 1000; ++i)
+        s.push(i);
+    for (int i = 0; i < num_threads; ++i) {
+        std::thread t = std::thread(pop_and_print, i);
+        mythreads.push_back(std::move(t));
+    }
+    for (auto& t : mythreads)t.join();
+    std::set<int> set(values.begin(),values.end());
+    
+    std::cout << set.size() << ",";
+    std::cout << std::endl;
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
