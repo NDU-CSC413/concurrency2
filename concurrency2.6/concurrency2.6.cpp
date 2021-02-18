@@ -9,24 +9,22 @@
 #include<atomic>
 #include <thread>
 #include <iostream>
-//class spin_lock {
-//    std::atomic_flag f;
-//    spin_lock() :f(ATOMIC_FLAG_INIT) {}
-//    void lock() {
-//        while (f.test_and_set());
-//    }
-//    void unlock() {
-//        f.clear();
-//    }
-//};
-int main()
-{
-    std::thread t;
-   /* std::atomic_flag f;
-    bool r = f.test_and_set();
-    std::cout << std::boolalpha << r << "\n";
-    r = f.test_and_set();
-    std::cout << std::boolalpha << r << "\n";*/
+#include <condition_variable>
+std::mutex m;
+std::condition_variable condVar;
+
+bool ready{ false };
+
+void writeT() {
+	std::unique_lock<std::mutex> lck(m);
+
+}
+void readT() {
+	std::unique_lock<std::mutex> lck(m);
+	condVar.wait(lck, []() {return ready; });
+}
+int main() {
+
 
 }
 
