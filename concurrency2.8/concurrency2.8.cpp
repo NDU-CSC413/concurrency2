@@ -12,7 +12,7 @@
 
 using namespace std::literals::chrono_literals;
 
-#define USELESS
+#define ASYNC
 #ifdef USELESS
 std::future<int>  useless(int val) {
 	std::promise<int> p;
@@ -42,8 +42,6 @@ int main() {
 #endif // THREAD
 
 #ifdef ASYNC
-
-
 int asyncf(int val) {
 	std::this_thread::sleep_for(5s);
 	return 2 * val;
@@ -51,6 +49,11 @@ int asyncf(int val) {
 int main()
 {
 	std::future<int> fut = std::async(asyncf, 23);
+	std::future_status status;
+	do {
+		std::cout << "Result not ready. Please wait.\n";
+		status = fut.wait_for(1s);
+	} while (status != std::future_status::ready);
 	std::cout << fut.get() << "\n";
 
 }

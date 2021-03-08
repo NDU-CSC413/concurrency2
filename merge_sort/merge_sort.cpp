@@ -14,7 +14,7 @@
 #include <thread>
 #include <random>
 
-const int n = 1 << 25;
+const int n = 1 << 22;
 std::vector<int> v(n);
 std::vector<int> u(n);
 int const num_threads = 8;

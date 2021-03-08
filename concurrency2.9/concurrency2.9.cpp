@@ -9,8 +9,8 @@ std::uniform_int_distribution<> dist(1, 10);
 using namespace std::literals::chrono_literals;
 int main()
 {
-   // std::string  url = "https://hikmatfarhat-ndu.github.io/CSC325/files/flows.pdf";
-    std::string url = "http://www.google.com";
+    std::string  url = "https://hikmatfarhat-ndu.github.io/CSC325/files/greedy.pdf";
+   // std::string url = "http://www.google.com";
     int total = 0, sum = 0;
     int x;
     auto   fut = std::async(get_url, url);
