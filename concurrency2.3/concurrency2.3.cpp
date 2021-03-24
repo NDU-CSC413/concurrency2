@@ -70,7 +70,7 @@ int main()
     for (int i = 0; i < 4; i++) {
         std::cout << "Trial " << i << std::endl;
         std::vector<std::thread> mythreads;
-        for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
             Reader r1, r2;
             Writer w;
             std::thread t1(r1);
