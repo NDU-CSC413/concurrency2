@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "concurrency2.65", "concurre
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "merge_sort", "merge_sort\merge_sort.vcxproj", "{5948708E-614B-43E9-9FA3-8BCA92BF6E0C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "concurrency2.75", "concurrency2.75\concurrency2.75.vcxproj", "{DA07309E-A834-4834-9FE8-1F446C77C007}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -151,6 +153,14 @@ Global
 		{5948708E-614B-43E9-9FA3-8BCA92BF6E0C}.Release|x64.Build.0 = Release|x64
 		{5948708E-614B-43E9-9FA3-8BCA92BF6E0C}.Release|x86.ActiveCfg = Release|Win32
 		{5948708E-614B-43E9-9FA3-8BCA92BF6E0C}.Release|x86.Build.0 = Release|Win32
+		{DA07309E-A834-4834-9FE8-1F446C77C007}.Debug|x64.ActiveCfg = Debug|x64
+		{DA07309E-A834-4834-9FE8-1F446C77C007}.Debug|x64.Build.0 = Debug|x64
+		{DA07309E-A834-4834-9FE8-1F446C77C007}.Debug|x86.ActiveCfg = Debug|Win32
+		{DA07309E-A834-4834-9FE8-1F446C77C007}.Debug|x86.Build.0 = Debug|Win32
+		{DA07309E-A834-4834-9FE8-1F446C77C007}.Release|x64.ActiveCfg = Release|x64
+		{DA07309E-A834-4834-9FE8-1F446C77C007}.Release|x64.Build.0 = Release|x64
+		{DA07309E-A834-4834-9FE8-1F446C77C007}.Release|x86.ActiveCfg = Release|Win32
+		{DA07309E-A834-4834-9FE8-1F446C77C007}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
