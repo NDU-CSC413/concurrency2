@@ -48,6 +48,8 @@ void consumer() {
    while (count< NUM) {
         std::this_thread::sleep_for(m(dist(rd)*2) );
         /* wrong order of locking*/
+       
+
         std::lock_guard ga(a);
         std::lock_guard gs(s);
         if (size != 0) {

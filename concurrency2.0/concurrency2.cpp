@@ -20,13 +20,17 @@
 /* choose one of the defines below: RACE,MUTEX,DEADLOCK */
 
 //#define RACE  //illustrate race condtion
-//#define MUTEX // solution to race condition using std::mutex
-#define DEADLOCK //mutex can lead to deadlock
+#define MUTEX // solution to race condition using std::mutex
+//#define DEADLOCK //mutex can lead to deadlock
 
 
 
 #define NUM_ITERATIONS 100000
 #define NUM_TRIALS 6
+
+#if defined(RACE) || defined (MUTEX)
+int y = 0;
+#endif
 
 
 #ifdef RACE
@@ -38,7 +42,6 @@ void sub(int& val) {
     for (int i = 0; i < NUM_ITERATIONS; ++i)
         --val;
 }
-int y = 0;
 int main()
 {
     for (int j = 0; j < NUM_TRIALS; ++j) {

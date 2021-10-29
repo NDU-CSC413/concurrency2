@@ -14,9 +14,9 @@
 #include <thread>
 #include <random>
 
-const int n = 1 << 22;
+const int n = 1 << 28;
 std::vector<int> v(n);
-std::vector<int> u(n);
+//std::vector<int> u(n);
 int const num_threads = 8;
 std::barrier barrier(num_threads);
 
@@ -51,11 +51,12 @@ void merge(Iter left, Iter right) {
 }
 template<typename Iter>
 void worker(Iter first, Iter second, Iter end, int idx) {
+	//0,2,4,6,8,10,12,14,16
 	auto d = std::distance(first, second);
 	std::sort(first, second);
-	idx /= 2;
+	idx /= 2;//??
 	while ((idx % 2) == 0) {
-
+		//0,4,8,12,16
 		if (second == end)break;
 		std::advance(second, d);
 		d *= 2;
@@ -66,13 +67,46 @@ void worker(Iter first, Iter second, Iter end, int idx) {
 	}
 	barrier.arrive_and_drop();
 }
-
+template <typename Iter>
+void doit(Iter start, Iter end) {
+	std::random_device rd;
+	std::uniform_int_distribution dist(1, 100);
+	std::generate(start, end, [&]() {
+		return dist(rd);
+		});
+}
+/** "parallel" generate 
+* launches num_threads threads and each calls doit
+* which in turn calls std::generate
+*/
+template <typename Iter>
+void generate(Iter start, Iter end) {
+	
+	auto d = std::distance(start, end);
+	std::vector<std::thread> mythreads;
+	Iter first = start;
+	Iter second = first;
+	int offset = d / num_threads;
+	std::advance(second, offset);
+	while (true) {
+		std::thread t(doit<Iter>,start,end	);
+		mythreads.push_back(std::move(t));
+		
+		std::advance(first, offset);
+		if (first == v.end())
+			break;
+		std::advance(second, offset);
+	}
+	for (auto& t : mythreads)t.join();
+}
 int main()
 {
 	std::random_device d;
 	std::uniform_int_distribution dist(1, 100);
-	std::generate_n(u.begin(), n, [&]() {return dist(d); });
-	std::generate_n(v.begin(), n, [&]() {return dist(d); });
+	//std::generate_n(u.begin(), n, [&]() {return dist(d); });
+	//std::generate_n(v.begin(), n, [&]() {return dist(d); });
+	generate(v.begin(), v.end());
+	std::cerr << "Finished generation of input. Started sorting.\n";
 	std::vector<std::thread> mythreads;
 	using vitr = std::vector<int>::iterator;
 
@@ -97,14 +131,14 @@ int main()
 	auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration<double, std::milli>(end - start);
 	std::cout << "parallel version time = " << duration.count() << std::endl;
-
-	start = std::chrono::high_resolution_clock::now();
+	//end of parallel
+	/*start = std::chrono::high_resolution_clock::now();
 	std::sort(u.begin(), u.end());
 	end = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration<double, std::milli>(end - start);
-	std::cout << "sequential version time = " << duration.count() << std::endl;
+	std::cout << "sequential version time = " << duration.count() << std::endl;*/
 
-	std::cout << std::boolalpha << std::is_sorted(v.begin(), v.end()) << "\n";
+	//std::cout << std::boolalpha << std::is_sorted(v.begin(), v.end()) << "\n";
 
 }
 
