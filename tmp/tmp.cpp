@@ -1,20 +1,14 @@
-/*****************************************************************//**
- * @file   concurrency2.6.cpp
- * @brief  condition variables
- * @author Hikmat Farhat
- * @date   February 2021
- *********************************************************************/
+#include <vector>
+#include <list>
 
-int f() {
-	return 2;
-}
-struct Test {
-	int operator()(int x) {
-		return 2*x;
-	}
-};
 int main() {
-	Test t;
-	int x=f();
-	int y = t(4);
+
+	std::vector<int> v{ 1,2,3,4 };
+	std::list<int> l{ 10,11,12,13 };
+	auto vb = v.begin();
+	auto itr = vb + 2;
+	auto lb = l.begin();
+	std::list<int>::iterator  p=lb;
+	std::advance(p, 2);
+
 }

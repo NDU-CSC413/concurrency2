@@ -14,7 +14,6 @@
 
 int num_threads = 10;
 using Duration = std::chrono::seconds;
-
 #define  CPP20
 #ifndef CPP20
 

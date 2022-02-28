@@ -14,10 +14,10 @@
 #include <thread>
 #include <random>
 
-const int n = 1 << 28;
+const int n = 1 << 24;
 std::vector<int> v(n);
-//std::vector<int> u(n);
-int const num_threads = 8;
+std::vector<int> u;
+int const num_threads = 16;
 std::barrier barrier(num_threads);
 
 template <typename Iter>
@@ -58,6 +58,8 @@ void worker(Iter first, Iter second, Iter end, int idx) {
 	while ((idx % 2) == 0) {
 		//0,4,8,12,16
 		if (second == end)break;
+		//
+		//
 		std::advance(second, d);
 		d *= 2;
 		idx /= 2;
@@ -106,7 +108,8 @@ int main()
 	//std::generate_n(u.begin(), n, [&]() {return dist(d); });
 	//std::generate_n(v.begin(), n, [&]() {return dist(d); });
 	generate(v.begin(), v.end());
-	std::cerr << "Finished generation of input. Started sorting.\n";
+	u = v;
+	//std::cerr << "Finished generation of input. Started sorting.\n";
 	std::vector<std::thread> mythreads;
 	using vitr = std::vector<int>::iterator;
 
@@ -132,11 +135,11 @@ int main()
 	auto duration = std::chrono::duration<double, std::milli>(end - start);
 	std::cout << "parallel version time = " << duration.count() << std::endl;
 	//end of parallel
-	/*start = std::chrono::high_resolution_clock::now();
+	start = std::chrono::high_resolution_clock::now();
 	std::sort(u.begin(), u.end());
 	end = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration<double, std::milli>(end - start);
-	std::cout << "sequential version time = " << duration.count() << std::endl;*/
+	std::cout << "sequential version time = " << duration.count() << std::endl;
 
 	//std::cout << std::boolalpha << std::is_sorted(v.begin(), v.end()) << "\n";
 

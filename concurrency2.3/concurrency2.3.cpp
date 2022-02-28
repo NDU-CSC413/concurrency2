@@ -25,8 +25,11 @@ public:
         int sum = 0;
         std::this_thread::sleep_for(std::chrono::milliseconds(dist(e) * 100));        
         wrt.lock_shared();
+
+
         std::cout << "Reader thread " << std::this_thread::get_id() << " started\n";
         for (auto x : v) {
+      
             sum += x;
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
@@ -45,6 +48,7 @@ public:
         int value = dist(e);
         std::this_thread::sleep_for(std::chrono::milliseconds(dist(e) * 100));
         wrt.lock();
+        // write locks exclusively and proceeds
         std::cout << " Writer thread " << std::this_thread::get_id() << " started\n";
 
         for (auto& x : v) {

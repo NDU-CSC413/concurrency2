@@ -49,9 +49,9 @@ void consumer() {
         std::this_thread::sleep_for(m(dist(rd)*2) );
         /* wrong order of locking*/
        
-
-        std::lock_guard ga(a);
         std::lock_guard gs(s);
+        std::lock_guard ga(a);
+       
         if (size != 0) {
          val = array[size--];
          count++;

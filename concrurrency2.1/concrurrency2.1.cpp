@@ -1,7 +1,7 @@
 /*****************************************************************//**
  * @file   concrurrency2.1.cpp
  * @brief  Using lock_guard
- * 
+ *  RAII= Resoure acquisition is initialization
  * @author Hikmat Farhat
  * @date   February 2021
  *********************************************************************/

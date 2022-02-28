@@ -30,7 +30,7 @@ int main()
         for (int i = 0; i < num_iterations; ++i)
             ++val;
     };
-    auto sub = [a, b](std::atomic<int>& val) {
+    auto sub = [a, b](std::atomic<int>& val) {  
         for (int i = 0; i < num_iterations; ++i) 
             --val;
     };

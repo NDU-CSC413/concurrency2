@@ -19,8 +19,8 @@
 
 /* choose one of the defines below: RACE,MUTEX,DEADLOCK */
 
-//#define RACE  //illustrate race condtion
-#define MUTEX // solution to race condition using std::mutex
+#define RACE  //illustrate race condtion
+//#define MUTEX // solution to race condition using std::mutex
 //#define DEADLOCK //mutex can lead to deadlock
 
 
@@ -101,6 +101,7 @@ int main()
         mythreads.push_back(std::thread(sub, std::ref(y)));
         for (auto& t : mythreads)
             t.join();
+        
 
         std::cout << "trial " << j << ",x=" << x << ",y=" << y << std::endl;
     }
