@@ -12,7 +12,8 @@
 
 using namespace std::literals::chrono_literals;
 
-#define ASYNC
+//#define ASYNC
+#define USELESS
 #ifdef USELESS
 std::future<int>  useless(int val) {
 	std::promise<int> p;

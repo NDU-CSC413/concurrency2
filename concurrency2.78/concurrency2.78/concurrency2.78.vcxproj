@@ -143,6 +143,9 @@
   <ItemGroup>
     <ClCompile Include="concurrency2.78.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="prefix-sum.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
